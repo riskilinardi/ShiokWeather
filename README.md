@@ -1,3 +1,3 @@
-# Trackery
+# Shiok Weather
 
-Trackery Mobile is an extension of Trackery WebApp. It is an exclusive app.
+Shiok Weather etc etc
