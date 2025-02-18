@@ -29,7 +29,7 @@ class _MapPage extends State<MapPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Map Box',
+                            'Map Boxx',
                             style: TextStyle(
                               color: Colors.blueAccent,
                               fontSize: 10.0,
