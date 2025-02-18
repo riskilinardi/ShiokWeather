@@ -1,3 +1,4 @@
+import 'mappage.dart';
 import 'homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +21,7 @@ class MainPage extends StatefulWidget {
 class _MainPage extends State<MainPage> {
   int _page = 1;
   final _pageOpt = [
-    HomePage(),
+    MapPage(),
     HomePage(),
     HomePage()
   ];
