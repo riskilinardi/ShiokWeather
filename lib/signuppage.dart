@@ -44,7 +44,7 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _page() {
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(20.0),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
