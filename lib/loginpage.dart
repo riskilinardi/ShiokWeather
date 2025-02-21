@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signuppage.dart'; 
-import 'homepage.dart';
+import 'homepage.dart'; 
 import 'main.dart';
-
 class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -13,7 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -23,21 +22,7 @@ Widget build(BuildContext context) {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Stack(
-          children: [
-            _page(),
-            Positioned(
-              top: 80,
-              left: 20,
-              child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () {
-                  Navigator.pop(context); // Go back to the previous screen
-                },
-              ),
-            ),
-          ],
-        ),
+        child: _page(),
       ),
     );
   }
@@ -57,8 +42,8 @@ Widget build(BuildContext context) {
             const SizedBox(height: 30),
             _extraText(),
             const SizedBox(height: 23),
-            _loginButton(), 
-            const SizedBox(height: 20), 
+            _loginButton(),
+            const SizedBox(height: 20),
             _signUpText(context),
           ],
         ),
@@ -73,25 +58,29 @@ Widget build(BuildContext context) {
         "Log In",
         style: TextStyle(
           fontSize: 40,
-          fontWeight: FontWeight.bold, 
-          color: Colors.white, 
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
         ),
       ),
     );
   }
 
-  Widget _inputField(String hintText, TextEditingController controller,
-      {bool isPassword = false}) {
+  Widget _inputField(
+    String hintText,
+    TextEditingController controller, {
+    bool isPassword = false,
+  }) {
     var border = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: const BorderSide(color: Colors.blue, width: 2)); 
+      borderRadius: BorderRadius.circular(20),
+      borderSide: const BorderSide(color: Colors.blue, width: 2),
+    );
 
     return TextField(
-      style: const TextStyle(color: Colors.white), 
+      style: const TextStyle(color: Colors.white),
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white), 
+        hintStyle: const TextStyle(color: Colors.white),
         enabledBorder: border,
         focusedBorder: border,
       ),
@@ -101,29 +90,50 @@ Widget build(BuildContext context) {
 
   Widget _extraText() {
     return Align(
-      alignment: Alignment.centerRight, 
+      alignment: Alignment.centerRight,
       child: const Text(
         "Forget Password?",
-        style: TextStyle(fontSize: 12, color: Colors.white), 
+        style: TextStyle(fontSize: 12, color: Colors.white),
       ),
     );
   }
 
   Widget _loginButton() {
     return Container(
-      width: double.infinity, 
-      height: 50, 
+      width: double.infinity,
+      height: 50,
       decoration: BoxDecoration(
-        color: Colors.blue, 
-        borderRadius: BorderRadius.circular(18), 
+        color: Colors.blue,
+        borderRadius: BorderRadius.circular(18),
       ),
       child: TextButton(
         onPressed: () {
-          print("Log In button pressed");
+          String username = usernameController.text;
+          String password = passwordController.text;
+
+          if (username == "testing" && password == "testing123") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MainPage()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Center(
+                  child: Text(
+                    "Invalid Username or Password",
+                    style: TextStyle(fontSize: 18), 
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         },
         child: const Text(
           "Log In",
-          style: TextStyle(fontSize: 16, color: Colors.white), 
+          style: TextStyle(fontSize: 16, color: Colors.white),
         ),
       ),
     );
@@ -148,7 +158,7 @@ Widget build(BuildContext context) {
               text: "Sign up",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.blue, 
+                color: Colors.blue,
                 decoration: TextDecoration.underline,
               ),
             ),

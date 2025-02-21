@@ -49,7 +49,7 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _signUpText(), 
+            _signUpText(),
             const SizedBox(height: 30),
             _inputField("Username", usernameController),
             const SizedBox(height: 20),
@@ -58,10 +58,10 @@ class _SignupPageState extends State<SignupPage> {
             _inputField("Password", passwordController, isPassword: true),
             const SizedBox(height: 20),
             _inputField("Confirm Password", confirmPasswordController, isPassword: true),
-            const SizedBox(height: 20), 
-            _signUpButton(), 
-            const SizedBox(height: 20), 
-            _logInText(context), 
+            const SizedBox(height: 20),
+            _signUpButton(),
+            const SizedBox(height: 20),
+            _logInText(context),
           ],
         ),
       ),
@@ -70,30 +70,36 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _signUpText() {
     return Align(
-      alignment: Alignment.centerLeft, 
+      alignment: Alignment.centerLeft,
       child: Text(
         "Sign Up",
         style: TextStyle(
           fontSize: 40,
-          fontWeight: FontWeight.bold, 
-          color: Colors.white, 
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
         ),
       ),
     );
   }
 
-  Widget _inputField(String hintText, TextEditingController controller,
-      {bool isPassword = false}) {
+  Widget _inputField(
+    String hintText,
+    TextEditingController controller, {
+    bool isPassword = false,
+  }) {
     var border = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Colors.blue)); 
+      borderRadius: BorderRadius.circular(18),
+      borderSide: const BorderSide(color: Colors.blue),
+    );
 
     return TextField(
-      style: const TextStyle(color: Colors.white), 
+      style: const TextStyle(color: Colors.white),
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white), 
+        hintStyle: const TextStyle(
+          color: Colors.white,
+        ),
         enabledBorder: border,
         focusedBorder: border,
       ),
@@ -103,11 +109,11 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _signUpButton() {
     return Container(
-      width: double.infinity, 
-      height: 50, 
+      width: double.infinity,
+      height: 50,
       decoration: BoxDecoration(
-        color: Colors.blue, 
-        borderRadius: BorderRadius.circular(18), 
+        color: Colors.blue,
+        borderRadius: BorderRadius.circular(18),
       ),
       child: TextButton(
         onPressed: () {
@@ -115,7 +121,10 @@ class _SignupPageState extends State<SignupPage> {
         },
         child: const Text(
           "Sign Up",
-          style: TextStyle(fontSize: 16, color: Colors.white), 
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -140,7 +149,7 @@ class _SignupPageState extends State<SignupPage> {
               text: "Log in",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.blue, 
+                color: Colors.blue,
                 decoration: TextDecoration.underline,
               ),
             ),
