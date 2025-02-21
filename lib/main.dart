@@ -22,7 +22,7 @@ class MainPage extends StatefulWidget {
 
 // NAVIGATION BAR CODES
 class _MainPage extends State<MainPage> {
-  int _page = 1;
+  int _page = 2;
   final _pageOpt = [
     HomePage(),
     MapPage(),
