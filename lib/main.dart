@@ -7,6 +7,7 @@ import 'mappage.dart';
 import 'homepage.dart';
 import 'loginpage.dart';
 import 'profilepage.dart';
+import 'reportpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
@@ -24,7 +25,7 @@ class MainPage extends StatefulWidget {
 class _MainPage extends State<MainPage> {
   int _page = 2;
   final _pageOpt = [
-    HomePage(),
+    ReportPage(),
     MapPage(),
     HomePage(),
     HomePage()
