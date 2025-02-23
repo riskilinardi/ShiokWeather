@@ -68,7 +68,7 @@ class _MainPage extends State<MainPage> {
 
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
-        index: 1,
+        index: 2,
         height: 50.0,
         items: <Widget>[
           Icon(MdiIcons.camera, size: 30),
