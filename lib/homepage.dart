@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:intl/intl.dart';
 
 class fourdayslist{
   DateTime? timestamp;
@@ -24,17 +26,29 @@ class fourdayslist{
       );
 }
 
+class threehourlylist{
+  DateTime? timestamp;
+  int? currtemp;
+  String? icon;
+
+  threehourlylist (
+      this.timestamp, this.currtemp, this.icon
+      );
+}
+
 class HomePage extends StatefulWidget {
   @override
   _HomePage createState() => _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
-  Future<List<fourdayslist>> fourdaysforecast() async {
+  final itemScrollController = ItemScrollController();
+  List<fourdayslist> listforecast = [];
+  List<threehourlylist> listhourlyforecast = [];
+  Future<void> fourdaysforecast() async {
     var url = 'https://api-open.data.gov.sg/v2/real-time/api/four-day-outlook';
     var response = await http.get(Uri.parse(url));
     var map = json.decode(response.body) as Map<String, dynamic>;
-    List<fourdayslist> listforecast = [];
     for (var x = 0; x < 4; x++) {
       var list = fourdayslist(
           DateTime.parse(map['data']['records'][0]['forecasts'][x]['timestamp']
@@ -52,7 +66,25 @@ class _HomePage extends State<HomePage> {
       );
       listforecast.add(list);
     }
-    return listforecast;
+  }
+
+  Future<void> threehourlyforecast() async {
+    var url = 'https://api.openweathermap.org/data/2.5/forecast?q=Singapore&appid=8b4deb04fad850eba9224dfb3ccfc328';
+    var response = await http.get(Uri.parse(url));
+    var map = json.decode(response.body) as Map<String, dynamic>;
+    for (var x = 0; x < 8; x++) {
+      var list = threehourlylist(
+          DateTime.parse(map['list'][x]['dt_txt'].toString()).add(const Duration(hours: 8)),
+          (map['list'][x]['main']['temp'] - 273.15).toInt(),
+          map['list'][x]['weather'][0]['icon'].toString()
+      );
+      listhourlyforecast.add(list);
+    }
+  }
+
+  Future<void> callapi() async{
+    await fourdaysforecast();
+    await threehourlyforecast();
   }
 
  @override
@@ -61,153 +93,73 @@ class _HomePage extends State<HomePage> {
         body: Container(
           color: Colors.white,
           child: FutureBuilder(
-              future: fourdaysforecast(),
+              future: callapi(),
               builder: (BuildContext context, AsyncSnapshot snapshot){
-                if(snapshot.hasData) {
-                  var data = snapshot.data;
-                  return StaggeredGrid.count(
-                    crossAxisCount: 2,
-                      crossAxisSpacing: 12.0,
-                      mainAxisSpacing: 12.0,
-                        children: <Widget>[
-                          _buildTile(
-                            Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: <Widget>[
-                                      Text(
-                                        'Today Highest Temperature',
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: 10.0,
+                if(listforecast.isNotEmpty && listhourlyforecast.isNotEmpty) {
+                  var data = listforecast;
+                  var data2 = listhourlyforecast;
+                    return ListView(
+                      children: [
+                        Card(
+                          margin: const EdgeInsets.only(bottom: 15),
+                          child: Padding(
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            child: SizedBox(
+                              height: 160,
+                              child: ScrollablePositionedList.separated(
+                                key: const PageStorageKey(0),
+                                separatorBuilder: (BuildContext context, int index) {
+                                  return const VerticalDivider(
+                                    width: 10,
+                                    indent: 40,
+                                    endIndent: 40,
+                                  );
+                                },
+                                itemCount: 8,
+                                scrollDirection: Axis.horizontal,
+                                itemScrollController: ItemScrollController(),
+                                itemBuilder: (context, i) {
+                                  final i8 = (i / 8).floor();
+
+                                  return GestureDetector(
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(vertical: 5),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.lightBlue,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(20),
                                         ),
                                       ),
-                                      Text(
-                                        data[0].temphigh.toString() + '\u2103',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 34.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                         child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                                Text(
+                                                  DateFormat('HH').format(DateTime.parse(data2[i].timestamp.toString())) + ':00',
+                                                ),
+                                            Text(
+                                              DateFormat('EEEE').format(DateTime.parse(data2[i].timestamp.toString())),
+                                            ),
+                                            Image.network('https://openweathermap.org/img/wn/'+ data2[i].icon.toString() +'@2x.png',
+                                              scale: 1.5,
+                                            ),
+                                            Text(data2[i].currtemp.toString() + '\u2103',
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ),
-                          _buildTile(
-                            Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: <Widget>[
-                                      Text(
-                                        'Today Lowest Temperature',
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: 10.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        data[0].templow.toString() + '\u2103',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 34.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          _buildTile(
-                            Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: <Widget>[
-                                      Text(
-                                        'Today Highest Humidity',
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: 10.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        data[0].rhhigh.toString() + '%',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 34.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          _buildTile(
-                            Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: <Widget>[
-                                      Text(
-                                        'Today Lowest Humidity',
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: 10.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        data[0].rhlow.toString() + '%',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 34.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                  );
+                        ),
+                      ],
+                    );
                 } else {
                   return Container(
                     child: Column(

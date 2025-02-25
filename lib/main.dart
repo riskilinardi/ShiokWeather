@@ -14,7 +14,7 @@ import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 void main() =>
-    runApp(MaterialApp(debugShowCheckedModeBanner: false, home: LoginPage()));
+    runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MainPage()));
 
 class MainPage extends StatefulWidget {
   @override
