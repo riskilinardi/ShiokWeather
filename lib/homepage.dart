@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:intl/intl.dart';
+import 'package:gap/gap.dart';
 
 class fourdayslist{
   DateTime? timestamp;
@@ -83,15 +84,18 @@ class _HomePage extends State<HomePage> {
   }
 
   Future<void> callapi() async{
+    listhourlyforecast = [];
+    listforecast = [];
     await fourdaysforecast();
     await threehourlyforecast();
   }
+
 
  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-          color: Colors.white,
+          color: Colors.black87,
           child: FutureBuilder(
               future: callapi(),
               builder: (BuildContext context, AsyncSnapshot snapshot){
@@ -100,8 +104,51 @@ class _HomePage extends State<HomePage> {
                   var data2 = listhourlyforecast;
                     return ListView(
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Gap(10),
+                              Text(
+                                'Singapore',
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+                              ),
+                              Image(
+                                image: AssetImage('assets/images/sunny.png'),
+                                fit: BoxFit.fill,
+                                height: 200,
+                              ),
+                              Text(
+                                data2[0].currtemp.toString() + '\u2103',
+                                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                  color: Colors.white,
+                                    fontSize: 90,
+                                    fontWeight: FontWeight.w700,
+                                    shadows: const [
+                                      Shadow(
+                                        blurRadius: 15,
+                                        offset: Offset(5, 5),
+                                      )
+                                    ]),
+                              ),
+                              Text(
+                                'Rainy',
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+                              ),
+                              const Gap(5),
+                              Text(
+                                DateFormat('MMMMEEEEd').format(DateTime.parse(data2[0].timestamp.toString())),
+                                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         Card(
-                          margin: const EdgeInsets.only(bottom: 15),
+                          margin: const EdgeInsets.only(bottom: 15, right: 10, left: 10),
+                          color: Colors.black87,
                           child: Padding(
                             padding:
                             const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -114,6 +161,7 @@ class _HomePage extends State<HomePage> {
                                     width: 10,
                                     indent: 40,
                                     endIndent: 40,
+                                    color: Colors.white
                                   );
                                 },
                                 itemCount: 8,
@@ -130,7 +178,7 @@ class _HomePage extends State<HomePage> {
                                         vertical: 5,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.lightBlue,
+                                        color: Colors.black38,
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(20),
                                         ),
@@ -140,14 +188,17 @@ class _HomePage extends State<HomePage> {
                                           children: [
                                                 Text(
                                                   DateFormat('HH').format(DateTime.parse(data2[i].timestamp.toString())) + ':00',
+                                                  style: TextStyle(color: Colors.white),
                                                 ),
                                             Text(
                                               DateFormat('EEEE').format(DateTime.parse(data2[i].timestamp.toString())),
+                                                style: TextStyle(color: Colors.white)
                                             ),
                                             Image.network('https://openweathermap.org/img/wn/'+ data2[i].icon.toString() +'@2x.png',
                                               scale: 1.5,
                                             ),
                                             Text(data2[i].currtemp.toString() + '\u2103',
+                                                style: TextStyle(color: Colors.white)
                                             ),
                                           ],
                                         )
@@ -155,6 +206,101 @@ class _HomePage extends State<HomePage> {
                                   );
                                 },
                               ),
+                            ),
+                          ),
+                        ),
+                        Card(
+                          color: Colors.black87,
+                          margin: const EdgeInsets.only(bottom: 15, right: 10, left: 10),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                            child: Column(
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: 4,
+                                  itemBuilder: (c, i) {
+                                    return InkWell(
+                                      splashColor: Colors.black87,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(16)),
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(vertical: 12),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                DateFormat('EEEE').format(DateTime.parse(data[i].timestamp.toString())),
+                                                style: Theme.of(c).textTheme.labelLarge?.copyWith(
+                                                  color: Colors.white,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Image.network('https://openweathermap.org/img/wn/'+ data2[i].icon.toString() +'@2x.png',
+                                                    scale: 1.5,
+                                                  ),
+                                                  const Gap(5),
+                                                  Expanded(
+                                                    child: Text('Testing',
+                                                      style: TextStyle(color: Colors.white),
+                                                      // style: labelLarge,
+                                                      // overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Text(data[i].templow.toString() + '\u2103',
+                                                    style: Theme.of(c).textTheme.labelLarge?.copyWith(
+                                                      color: Colors.white30,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    ' / ',
+                                                    style: Theme.of(c).textTheme.labelLarge?.copyWith(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  Text(data[i].temphigh.toString() + '\u2103',
+                                                    style: Theme.of(c).textTheme.labelLarge?.copyWith(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                // const Divider(),
+                                // InkWell(
+                                //   splashColor: Colors.black87,
+                                //   borderRadius: BorderRadius.all(
+                                //       Radius.circular(16)),
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.symmetric(vertical: 10),
+                                //     child: Text(
+                                //       'weather',
+                                //       // style: textTheme.titleMedium,
+                                //       // overflow: TextOverflow.ellipsis,
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
                             ),
                           ),
                         ),

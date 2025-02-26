@@ -46,11 +46,12 @@ class _MainPage extends State<MainPage> {
         centerTitle: true,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: <Color>[Colors.lightBlue, Colors.indigo],
-            ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            //   colors: <Color>[Colors.lightBlue, Colors.indigo],
+            // ),
+            color: Colors.black87
           ),
         ),
         actions: [
@@ -64,21 +65,21 @@ class _MainPage extends State<MainPage> {
             },
           ),
         ],
-      ),
 
+      ),
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: 2,
         height: 50.0,
         items: <Widget>[
-          Icon(MdiIcons.camera, size: 30),
-          Icon(MdiIcons.alphaI, size: 30),
-          Icon(MdiIcons.home, size: 30),
-          Icon(MdiIcons.alphaA, size: 30),
+          Icon(MdiIcons.camera, size: 30, color: Colors.white70),
+          Icon(MdiIcons.alphaI, size: 30, color: Colors.white70),
+          Icon(MdiIcons.home, size: 30, color: Colors.white70),
+          Icon(MdiIcons.alphaA, size: 30, color: Colors.white70),
         ],
-        color: Colors.indigo,
-        buttonBackgroundColor: Colors.indigo[400],
-        backgroundColor: Colors.white,
+        color: Colors.black87,
+        buttonBackgroundColor: Colors.black87,
+        backgroundColor: Colors.black12,
         animationCurve: Curves.easeInOut,
         animationDuration: Duration(milliseconds: 600),
         onTap: (index) {
