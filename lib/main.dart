@@ -1,20 +1,19 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'mappage.dart';
 import 'homepage.dart';
 import 'loginpage.dart';
+import 'db.dart';
 import 'profilepage.dart';
 import 'reportpage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-void main() =>
-    runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MainPage()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper.instance.initDb();
+  await DatabaseHelper.instance.initializeUsers();
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: LoginPage()));
+}
 
 class MainPage extends StatefulWidget {
   @override

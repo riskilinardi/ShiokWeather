@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'signuppage.dart'; 
 import 'homepage.dart'; 
 import 'main.dart';
+import 'db.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -10,6 +12,20 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  List<User> users = [];
+  @override
+  void initState(){
+    super.initState();
+    fetchUsers();
+  }
+
+  Future<void> fetchUsers() async{
+    final userMap = await DatabaseHelper.instance.queryAllUsers();
+    setState(() {
+      users = userMap.map((um) => User.fromMap(um)).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
           String username = usernameController.text;
           String password = passwordController.text;
 
-          if (username == "testing" && password == "testing123") {
+          if (username == users[0].username && password == users[0].password) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => MainPage()),
