@@ -5,18 +5,20 @@ import 'package:sqflite/sqflite.dart';
 class User {
   final int? id;
   final String username;
+  final String email;
   final String password;
 
-  User({this.id, required this.username, required this.password});
+  User({this.id, required this.username, required this.email, required this.password});
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'username': username, 'password': password};
+    return {'id': id, 'username': username, 'email': email, 'password': password};
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'],
       username: map['username'],
+      email: map['email'],
       password: map['password'],
     );
   }
@@ -45,6 +47,7 @@ class DatabaseHelper {
       CREATE TABLE users (
         id INTEGER PRIMARY KEY,
         username TEXT,
+        email TEXT,
         password TEXT
       )
     ''');
@@ -72,7 +75,7 @@ class DatabaseHelper {
 
   Future<void> initializeUsers() async {
     List<User> usersToAdd = [
-      User(username: 'Admin', password: 'admin123'),
+      User(username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
     ];
 
     for (User user in usersToAdd) {
