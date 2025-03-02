@@ -6,6 +6,7 @@ import 'loginpage.dart';
 import 'db.dart';
 import 'profilepage.dart';
 import 'reportpage.dart';
+import 'friendlistpage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -28,7 +29,8 @@ class _MainPage extends State<MainPage> {
     ReportPage(),
     MapPage(),
     HomePage(),
-    UserTablePage()
+    UserTablePage(),
+    Friendlistpage()
     ];
   GlobalKey _bottomNavigationKey = GlobalKey();
 
@@ -76,6 +78,7 @@ class _MainPage extends State<MainPage> {
           Icon(MdiIcons.alphaI, size: 30, color: Colors.white70),
           Icon(MdiIcons.home, size: 30, color: Colors.white70),
           Icon(MdiIcons.alphaA, size: 30, color: Colors.white70),
+          Icon(MdiIcons.beta, size: 30, color: Colors.white70),
         ],
         color: Colors.black87,
         buttonBackgroundColor: Colors.black87,
