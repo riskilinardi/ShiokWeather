@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -11,63 +13,21 @@ class MapPage extends StatefulWidget {
 
 class _MapPage extends State<MapPage> {
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-          color: Colors.white,
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                _buildTile(
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Map Boxx',
-                            style: TextStyle(
-                              color: Colors.blueAccent,
-                              fontSize: 10.0,
-                            ),
-                          ),
-                          Text(
-                            "Map API",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 34.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),],
-            ),
+    return Card(
+      margin: const EdgeInsets.only(top: 20, bottom: 200, right: 20, left: 20),
+      color: Colors.black87,
+      child: new FlutterMap(
+        options: MapOptions(
+          initialCenter: LatLng(1.3521, 103.8198), // Center the map over London
+          initialZoom: 12,
+        ),
+        children: [
+          TileLayer( // Bring your own tiles
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // For demonstration only
+            userAgentPackageName: 'com.example.app', // Add your app identifier
+            // And many more recommended properties!
           ),
-        ));
-  }
-
-  Widget _buildTile(Widget child, {Function()? onTap}) {
-    return Material(
-      elevation: 14.0,
-      borderRadius: BorderRadius.circular(12.0),
-      shadowColor: Color(0x802196F3),
-      child: InkWell(
-        // Do onTap() if it isn't null, otherwise do print()
-        onTap:
-        onTap != null
-            ? () => onTap()
-            : () {
-          print('Not set yet');
-        },
-        child: child,
+        ],
       ),
     );
   }
