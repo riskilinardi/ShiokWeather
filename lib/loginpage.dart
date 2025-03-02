@@ -14,6 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   List<User> users = [];
+  
   @override
   void initState(){
     super.initState();
@@ -127,7 +128,10 @@ class _LoginPageState extends State<LoginPage> {
           String username = usernameController.text;
           String password = passwordController.text;
 
-          if (username == users[0].username && password == users[0].password) {
+          bool isValidUser = users.any((user) =>
+            user.username == username && user.password == password);
+
+          if (isValidUser) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => MainPage()),

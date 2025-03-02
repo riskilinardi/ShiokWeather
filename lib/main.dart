@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'mappage.dart';
 import 'homepage.dart';
+import 'table.dart';
 import 'loginpage.dart';
 import 'db.dart';
 import 'profilepage.dart';
@@ -27,7 +28,7 @@ class _MainPage extends State<MainPage> {
     ReportPage(),
     MapPage(),
     HomePage(),
-    HomePage()
+    UserTablePage()
     ];
   GlobalKey _bottomNavigationKey = GlobalKey();
 

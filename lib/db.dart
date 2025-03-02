@@ -73,7 +73,16 @@ class DatabaseHelper {
     return await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<void> initializeUsers() async {
+ Future<void> initializeUsers() async {
+  Database db = await instance.db;
+
+  List<Map<String, dynamic>> existingUsers = await db.query(
+    'users',
+    where: 'username = ?',
+    whereArgs: ['Admin'],
+  );
+
+  if (existingUsers.isEmpty) {
     List<User> usersToAdd = [
       User(username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
     ];
@@ -82,4 +91,5 @@ class DatabaseHelper {
       await insertUser(user);
     }
   }
+}
 }

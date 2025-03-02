@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'loginpage.dart';
+import 'loginpage.dart'; // Import the LoginPage
+import 'db.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -53,11 +54,18 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(height: 30),
             _inputField("Username", usernameController),
             const SizedBox(height: 20),
-            _inputField("Email", emailController),
+            _inputField(
+              "Email",
+              emailController,
+            ),
             const SizedBox(height: 20),
             _inputField("Password", passwordController, isPassword: true),
             const SizedBox(height: 20),
-            _inputField("Confirm Password", confirmPasswordController, isPassword: true),
+            _inputField(
+              "Confirm Password",
+              confirmPasswordController,
+              isPassword: true,
+            ),
             const SizedBox(height: 20),
             _signUpButton(),
             const SizedBox(height: 20),
@@ -70,13 +78,13 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _signUpText() {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.centerLeft, 
       child: Text(
         "Sign Up",
         style: TextStyle(
           fontSize: 40,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: Colors.white, 
         ),
       ),
     );
@@ -90,16 +98,16 @@ class _SignupPageState extends State<SignupPage> {
     var border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
       borderSide: const BorderSide(color: Colors.blue),
-    );
+    ); 
 
     return TextField(
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white), 
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(
           color: Colors.white,
-        ),
+        ), 
         enabledBorder: border,
         focusedBorder: border,
       ),
@@ -107,17 +115,63 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  // Sign Up button
   Widget _signUpButton() {
     return Container(
-      width: double.infinity,
-      height: 50,
+      width:
+          double
+              .infinity, 
+      height: 50, 
       decoration: BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(18),
+        color: Colors.blue, 
+        borderRadius: BorderRadius.circular(
+          18,
+        ), 
       ),
       child: TextButton(
-        onPressed: () {
-          print("Sign Up button pressed");
+        onPressed: () async {
+          // Validate inputs
+          if (passwordController.text != confirmPasswordController.text) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Passwords do not match'),
+            ));
+            return;
+          }
+
+          if (usernameController.text.isEmpty ||
+              emailController.text.isEmpty ||
+              passwordController.text.isEmpty) {
+            // Fields cannot be empty
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Please fill in all fields'),
+            ));
+            return;
+          }
+
+          User newUser = User(
+            username: usernameController.text,
+            email: emailController.text,
+            password: passwordController.text,
+          );
+
+          // Insert the user into the database
+          int result = await DatabaseHelper.instance.insertUser(newUser);
+
+          if (result > 0) {
+            // User inserted successfully
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Sign Up Successful'),
+            ));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to login page
+            );
+          } else {
+            // Something went wrong
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Sign Up Failed'),
+            ));
+          }
         },
         child: const Text(
           "Sign Up",
@@ -130,6 +184,7 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  // Log In prompt with clickable link
   Widget _logInText(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -149,7 +204,9 @@ class _SignupPageState extends State<SignupPage> {
               text: "Log in",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.blue,
+                color:
+                    Colors
+                        .blue, 
                 decoration: TextDecoration.underline,
               ),
             ),
