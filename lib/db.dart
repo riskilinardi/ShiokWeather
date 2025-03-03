@@ -75,6 +75,7 @@ class DatabaseHelper {
         password TEXT
       )
     ''');
+
     await db.execute('''
       CREATE TABLE floodreport (
         id INTEGER PRIMARY KEY,

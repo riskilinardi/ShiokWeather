@@ -83,7 +83,7 @@ class _ReportPageState extends State<ReportPage> {
         IconButton(
           icon: Icon(Icons.add_a_photo),
           onPressed: _pickImage,
-          color: Colors.blue,
+          color: Colors.blueGrey,
         ),
       ],
     );
@@ -95,7 +95,7 @@ class _ReportPageState extends State<ReportPage> {
       height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.blue, width: 2),
+        border: Border.all(color: Colors.blueGrey, width: 2),
       ),
       child: imageFile != null
           ? ClipRRect(
@@ -151,15 +151,15 @@ class _ReportPageState extends State<ReportPage> {
         hintText: label,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: Colors.blueGrey, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: Colors.blueGrey, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: Colors.blueGrey, width: 2),
         ),
       ),
     );
@@ -174,15 +174,15 @@ class _ReportPageState extends State<ReportPage> {
         hintText: label,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: Colors.blueGrey, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: Colors.blueGrey, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: Colors.blueGrey, width: 2),
         ),
       ),
     );
@@ -193,7 +193,7 @@ class _ReportPageState extends State<ReportPage> {
       width: double.infinity,
       height: 50,
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Colors.blueGrey,
         borderRadius: BorderRadius.circular(18),
       ),
       child: TextButton(
@@ -224,7 +224,7 @@ class _ReportPageState extends State<ReportPage> {
           if (result > 0) {
             // User inserted successfully
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Flood report submitted'),
+              content: Text('Flood report submitted', style: TextStyle(color: Colors.white),),
             ));
             Navigator.pushReplacement(
               context,
