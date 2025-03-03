@@ -28,22 +28,26 @@ class _MapPage extends State<MapPage> {
             future: callapi(),
             builder: (BuildContext context, AsyncSnapshot snapshot){
               if(snapshot.hasData) {
-                return Card(
-                  margin: const EdgeInsets.only(top: 20, bottom: 200, right: 20, left: 20),
-                  color: Colors.black87,
-                  child: new FlutterMap(
-                    options: MapOptions(
-                      initialCenter: LatLng(1.3521, 103.8198), // Center the map over London
-                      initialZoom: 12,
-                    ),
-                    children: [
-                      TileLayer( // Bring your own tiles
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // For demonstration only
-                        userAgentPackageName: 'com.example.app', // Add your app identifier
-                        // And many more recommended properties!
+                return Stack(
+                  children: [
+                    Card(
+                      margin: const EdgeInsets.only(top: 20, bottom: 400, right: 20, left: 20),
+                      color: Colors.black87,
+                      child: new FlutterMap(
+                        options: MapOptions(
+                          initialCenter: LatLng(1.3521, 103.8198), // Center the map over London
+                          initialZoom: 13,
+                        ),
+                        children: [
+                          TileLayer( // Bring your own tiles
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // For demonstration only
+                            userAgentPackageName: 'com.example.app', // Add your app identifier
+                            // And many more recommended properties!
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                 ]
                 );
               } else {
                 return Card(

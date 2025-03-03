@@ -1,6 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shiokweather/homepage.dart';
+import 'package:shiokweather/main.dart';
+import 'package:shiokweather/mappage.dart';
+import 'db.dart';
 
 class ReportPage extends StatefulWidget {
   @override
@@ -35,7 +40,7 @@ class _ReportPageState extends State<ReportPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
+          color: Colors.black87,
           child: _page(),
         ),
       ),
@@ -74,7 +79,7 @@ class _ReportPageState extends State<ReportPage> {
       children: [
         Text(
           "Photo",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white70),
         ),
         IconButton(
           icon: Icon(Icons.add_a_photo),
@@ -106,7 +111,7 @@ class _ReportPageState extends State<ReportPage> {
           : Center(
               child: Text(
                 "No image selected",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.white70),
               ),
             ),
     );
@@ -118,12 +123,12 @@ class _ReportPageState extends State<ReportPage> {
       children: [
         Text(
           "Description",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white70),
         ),
         ValueListenableBuilder(
           valueListenable: descriptionController,
           builder: (context, value, child) {
-            return Text("${descriptionController.text.length}/200");
+            return Text("${descriptionController.text.length}/200", style: TextStyle(color: Colors.white70),);
           },
         ),
       ],
@@ -133,12 +138,13 @@ class _ReportPageState extends State<ReportPage> {
   Widget _locationHeader() {
     return Text(
       "Location",
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white70),
     );
   }
 
   Widget _inputField(String label, TextEditingController controller) {
     return TextField(
+      style: TextStyle(color: Colors.white70),
       controller: controller,
       maxLength: 200,
       maxLines: 4,
@@ -162,6 +168,7 @@ class _ReportPageState extends State<ReportPage> {
 
   Widget _locationInput(String label, TextEditingController controller) {
     return TextField(
+      style: TextStyle(color: Colors.white70),
       controller: controller,
       maxLength: 200,
       decoration: InputDecoration(
@@ -191,10 +198,49 @@ class _ReportPageState extends State<ReportPage> {
         borderRadius: BorderRadius.circular(18),
       ),
       child: TextButton(
-        onPressed: () {},
+        onPressed: () async {
+          // Validate inputs
+          if (imageFile == null ||
+              descriptionController.text.isEmpty ||
+              locationController.text.isEmpty) {
+            // Fields cannot be empty
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Please fill in all fields'),
+            ));
+            return;
+          }
+
+          List<int> bytesimage = imageFile?.readAsBytesSync() as List<int>;
+          String base64 = base64Encode(bytesimage);
+
+          FloodReport fr = FloodReport(
+            photo: base64,
+            description: descriptionController.text,
+            location: locationController.text,
+          );
+
+          // Insert the user into the database
+          int result = await DatabaseHelper.instance.insertFloodReport(fr);
+
+          if (result > 0) {
+            // User inserted successfully
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Flood report submitted'),
+            ));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MainPage()), // Navigate to login page
+            );
+          } else {
+            // Something went wrong
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Flood report failed!'),
+            ));
+          }
+        },
         child: const Text(
           "Submit",
-          style: TextStyle(fontSize: 16, color: Colors.white),
+          style: TextStyle(fontSize: 16, color: Colors.white70),
         ),
       ),
     );

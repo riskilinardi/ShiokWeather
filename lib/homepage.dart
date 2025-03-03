@@ -115,7 +115,7 @@ class _HomePage extends State<HomePage> {
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
                               ),
                               Image(
-                                image: AssetImage('assets/images/sunny.png'),
+                                image: AssetImage('assets/images/rainy.png'),
                                 fit: BoxFit.fill,
                                 height: 200,
                               ),

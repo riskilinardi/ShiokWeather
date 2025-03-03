@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'db.dart';
 
@@ -8,11 +10,13 @@ class UserTablePage extends StatefulWidget {
 
 class _UserTablePageState extends State<UserTablePage> {
   List<Map<String, dynamic>> _users = [];
+  List<Map<String, dynamic>> _reports = [];
 
   @override
   void initState() {
     super.initState();
     _loadUsers();
+    _loadReports();
   }
 
   // Load all users from the database
@@ -23,11 +27,19 @@ class _UserTablePageState extends State<UserTablePage> {
     });
   }
 
+  // Load all users from the database
+  _loadReports() async {
+    List<Map<String, dynamic>> reports = await DatabaseHelper.instance.queryAllFloodReport();
+    setState(() {
+      _reports = reports;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Users Table'),
+        title: Text('Reports Table'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -54,12 +66,12 @@ class _UserTablePageState extends State<UserTablePage> {
             DataColumn(label: Text('Email')),
             DataColumn(label: Text('Password')),
           ],
-          rows: _users.map((user) {
+          rows: _reports.map((report) {
             return DataRow(cells: [
-              DataCell(Text(user['id'].toString())),
-              DataCell(Text(user['username'])),
-              DataCell(Text(user['email'])),
-              DataCell(Text(user['password'])),
+              DataCell(Text(report['id'].toString())),
+              DataCell(Image.memory(base64Decode(report['photo']))),
+              DataCell(Text(report['description'])),
+              DataCell(Text(report['location'])),
             ]);
           }).toList(),
         ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+// To help store user details for users table
 class User {
   final int? id;
   final String username;
@@ -20,6 +21,29 @@ class User {
       username: map['username'],
       email: map['email'],
       password: map['password'],
+    );
+  }
+}
+
+// To help store data for flood reports
+class FloodReport {
+  final int? id;
+  final String photo;
+  final String description;
+  final String location;
+
+  FloodReport({this.id, required this.photo, required this.description, required this.location});
+
+  Map<String, dynamic> toMap() {
+    return {'id': id, 'photo': photo, 'description': description, 'location': location};
+  }
+
+  factory FloodReport.fromMap(Map<String, dynamic> map) {
+    return FloodReport(
+      id: map['id'],
+      photo: map['photo'],
+      description: map['description'],
+      location: map['location'],
     );
   }
 }
@@ -51,6 +75,14 @@ class DatabaseHelper {
         password TEXT
       )
     ''');
+    await db.execute('''
+      CREATE TABLE floodreport (
+        id INTEGER PRIMARY KEY,
+        photo TEXT,
+        description TEXT,
+        location TEXT
+      )
+    ''');
   }
 
   Future<int> insertUser(User user) async {
@@ -73,23 +105,45 @@ class DatabaseHelper {
     return await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
- Future<void> initializeUsers() async {
-  Database db = await instance.db;
+   Future<void> initializeUsers() async {
+      Database db = await instance.db;
 
-  List<Map<String, dynamic>> existingUsers = await db.query(
-    'users',
-    where: 'username = ?',
-    whereArgs: ['Admin'],
-  );
+      List<Map<String, dynamic>> existingUsers = await db.query(
+        'users',
+        where: 'username = ?',
+        whereArgs: ['Admin'],
+      );
 
-  if (existingUsers.isEmpty) {
-    List<User> usersToAdd = [
-      User(username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
-    ];
+      if (existingUsers.isEmpty) {
+        List<User> usersToAdd = [
+          User(username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
+        ];
 
-    for (User user in usersToAdd) {
-      await insertUser(user);
+        for (User user in usersToAdd) {
+          await insertUser(user);
+        }
+      }
     }
+
+  // Flood Report Function
+  Future<int> insertFloodReport(FloodReport fr) async {
+    Database db = await instance.db;
+    return await db.insert('floodreport', fr.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
-}
+
+  Future<List<Map<String, dynamic>>> queryAllFloodReport() async {
+    Database db = await instance.db;
+    return await db.query('floodreport');
+  }
+
+  Future<int> updateFloodReport(FloodReport fr) async {
+    Database db = await instance.db;
+    return await db.update('floodreport', fr.toMap(), where: 'id = ?', whereArgs: [fr.id]);
+  }
+
+  Future<int> deleteFloodReport(int id) async {
+    Database db = await instance.db;
+    return await db.delete('floodreport', where: 'id = ?', whereArgs: [id]);
+  }
+
 }
