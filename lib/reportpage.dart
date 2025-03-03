@@ -38,11 +38,10 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.black87,
+      body: Container(
+        color: Colors.black87,
           child: _page(),
-        ),
+
       ),
     );
   }
@@ -57,11 +56,11 @@ class _ReportPageState extends State<ReportPage> {
             _photoHeader(),
             const SizedBox(height: 10),
             _imageDisplay(),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             _headerWithCounter(),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             _inputField("Description...", descriptionController),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             _locationHeader(),
             const SizedBox(height: 10),
             _locationInput("Location...", locationController),
