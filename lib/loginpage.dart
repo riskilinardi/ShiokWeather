@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'signuppage.dart'; 
-import 'homepage.dart'; 
+import 'signuppage.dart';
+import 'homepage.dart';
 import 'main.dart';
 import 'db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,14 +15,14 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   List<User> users = [];
-  
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     fetchUsers();
   }
 
-  Future<void> fetchUsers() async{
+  Future<void> fetchUsers() async {
     final userMap = await DatabaseHelper.instance.queryAllUsers();
     setState(() {
       users = userMap.map((um) => User.fromMap(um)).toList();
@@ -126,27 +126,32 @@ class _LoginPageState extends State<LoginPage> {
           int? id;
           bool isValidUser = false;
 
-          for(final u in users){
-            if(u.username == username && u.password == password){
+          for (final u in users) {
+            if (u.username == username && u.password == password) {
               isValidUser = true;
               id = u.id;
             }
           }
 
           if (isValidUser) {
+            // Store the user data in SharedPreferences
+            final SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setInt('id', id!);
+            await prefs.setString('username', username); // Store the username
+            await prefs.setString('email', users.firstWhere((u) => u.id == id).email); // Store the email
+            
+            // Navigate to MainPage
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => MainPage()),
             );
-            final SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setInt('id', id!);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Center(
                   child: Text(
                     "Invalid Username or Password",
-                    style: TextStyle(fontSize: 18), 
+                    style: TextStyle(fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
                 ),

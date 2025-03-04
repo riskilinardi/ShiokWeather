@@ -49,6 +49,7 @@ class _HomePage extends State<HomePage> {
   List<fourdayslist> listforecast = [];
   List<threehourlylist> listhourlyforecast = [];
   int? uid;
+
   Future<void> fourdaysforecast() async {
     var url = 'https://api-open.data.gov.sg/v2/real-time/api/four-day-outlook';
     var response = await http.get(Uri.parse(url));
@@ -85,14 +86,15 @@ class _HomePage extends State<HomePage> {
     }
   }
 
-  Future<void> callapi() async{
-    listhourlyforecast = [];
-    listforecast = [];
-    await fourdaysforecast();
-    await threehourlyforecast();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    uid = prefs.getInt('id');
-  }
+Future<void> callapi() async {
+  listhourlyforecast = [];
+  listforecast = [];
+  await fourdaysforecast();
+  await threehourlyforecast();
+  
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  uid = prefs.getInt('id');
+}
 
 
  @override
