@@ -7,6 +7,7 @@ import 'db.dart';
 import 'profilepage.dart';
 import 'reportpage.dart';
 import 'friendlistpage.dart';
+import 'moodpage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -30,7 +31,7 @@ class _MainPage extends State<MainPage> {
     MapPage(),
     HomePage(),
     UserTablePage(),
-    Friendlistpage()
+    Moodpage()
     ];
   GlobalKey _bottomNavigationKey = GlobalKey();
 

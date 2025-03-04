@@ -48,6 +48,31 @@ class FloodReport {
   }
 }
 
+// To help store data for mood
+class Mood {
+  final int? id;
+  final String status;
+  final String imagePath;
+
+  Mood({this.id, required this.status, required this.imagePath});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'status': status,
+      'imagePath': imagePath,
+    };
+  }
+
+  factory Mood.fromMap(Map<String, dynamic> map) {
+    return Mood(
+      id: map['id'],
+      status: map['status'],
+       imagePath: map['imagePath'],
+    );
+  }
+}
+
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
   static Database? _database;
@@ -63,7 +88,11 @@ class DatabaseHelper {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'shiokweather.db');
 
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(
+      path,
+      version: 1, 
+      onCreate: _onCreate,
+    );
   }
 
   Future _onCreate(Database db, int version) async {
@@ -82,6 +111,14 @@ class DatabaseHelper {
         photo TEXT,
         description TEXT,
         location TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE mood (
+        id INTEGER PRIMARY KEY,
+        status TEXT,
+        imagePath TEXT
       )
     ''');
   }
@@ -106,27 +143,26 @@ class DatabaseHelper {
     return await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
-   Future<void> initializeUsers() async {
-      Database db = await instance.db;
+  Future<void> initializeUsers() async {
+    Database db = await instance.db;
 
-      List<Map<String, dynamic>> existingUsers = await db.query(
-        'users',
-        where: 'username = ?',
-        whereArgs: ['Admin'],
-      );
+    List<Map<String, dynamic>> existingUsers = await db.query(
+      'users',
+      where: 'username = ?',
+      whereArgs: ['Admin'],
+    );
 
-      if (existingUsers.isEmpty) {
-        List<User> usersToAdd = [
-          User(username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
-        ];
+    if (existingUsers.isEmpty) {
+      List<User> usersToAdd = [
+        User(username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
+      ];
 
-        for (User user in usersToAdd) {
-          await insertUser(user);
-        }
+      for (User user in usersToAdd) {
+        await insertUser(user);
       }
     }
+  }
 
-  // Flood Report Function
   Future<int> insertFloodReport(FloodReport fr) async {
     Database db = await instance.db;
     return await db.insert('floodreport', fr.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
@@ -147,4 +183,18 @@ class DatabaseHelper {
     return await db.delete('floodreport', where: 'id = ?', whereArgs: [id]);
   }
 
+  Future<int> insertMood(Mood m) async {
+    Database db = await instance.db;
+    return await db.insert('mood', m.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<List<Map<String, dynamic>>> queryAllMood() async {
+    Database db = await instance.db;
+    return await db.query('mood');
+  }
+
+  Future<int> updateMood(Mood m) async {
+    Database db = await instance.db;
+    return await db.update('mood', m.toMap(), where: 'id = ?', whereArgs: [m.id]);
+  }
 }
