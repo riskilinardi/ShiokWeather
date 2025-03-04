@@ -3,6 +3,7 @@ import 'signuppage.dart';
 import 'homepage.dart'; 
 import 'main.dart';
 import 'db.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -119,18 +120,26 @@ class _LoginPageState extends State<LoginPage> {
         borderRadius: BorderRadius.circular(18),
       ),
       child: TextButton(
-        onPressed: () {
+        onPressed: () async {
           String username = usernameController.text;
           String password = passwordController.text;
+          int? id;
+          bool isValidUser = false;
 
-          bool isValidUser = users.any((user) =>
-            user.username == username && user.password == password);
+          for(final u in users){
+            if(u.username == username && u.password == password){
+              isValidUser = true;
+              id = u.id;
+            }
+          }
 
           if (isValidUser) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => MainPage()),
             );
+            final SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setInt('id', id!);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
