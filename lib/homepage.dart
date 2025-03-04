@@ -105,7 +105,7 @@ class _HomePage extends State<HomePage> {
                     return ListView(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 15),
+                          padding: const EdgeInsets.only(bottom: 15, top: 8),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -286,20 +286,20 @@ class _HomePage extends State<HomePage> {
                                     );
                                   },
                                 ),
-                                // const Divider(),
-                                // InkWell(
-                                //   splashColor: Colors.black87,
-                                //   borderRadius: BorderRadius.all(
-                                //       Radius.circular(16)),
-                                //   child: Padding(
-                                //     padding: const EdgeInsets.symmetric(vertical: 10),
-                                //     child: Text(
-                                //       'weather',
-                                //       // style: textTheme.titleMedium,
-                                //       // overflow: TextOverflow.ellipsis,
-                                //     ),
-                                //   ),
-                                // ),
+                                const Divider(),
+                                InkWell(
+                                  splashColor: Colors.black87,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(16)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      '4 days forecast',
+                                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),

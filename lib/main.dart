@@ -30,8 +30,8 @@ class _MainPage extends State<MainPage> {
     ReportPage(),
     MapPage(),
     HomePage(),
-    UserTablePage(),
-    Moodpage()
+    Moodpage(),
+    ProfilePage()
     ];
   GlobalKey _bottomNavigationKey = GlobalKey();
 
@@ -39,27 +39,17 @@ class _MainPage extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Shiok Weather",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold, 
-          ),
+        title: Image.asset('assets/icon/icon.png', height: 70,
         ),
-        centerTitle: true,
+        centerTitle: false,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            // gradient: LinearGradient(
-            //   begin: Alignment.topCenter,
-            //   end: Alignment.bottomCenter,
-            //   colors: <Color>[Colors.lightBlue, Colors.indigo],
-            // ),
             color: Colors.black87
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle, color: Colors.white, size: 30),
+            icon: Icon(Icons.settings, color: Colors.white, size: 30),
             onPressed: () {
               Navigator.push(
                 context,
@@ -76,10 +66,10 @@ class _MainPage extends State<MainPage> {
         height: 50.0,
         items: <Widget>[
           Icon(MdiIcons.camera, size: 30, color: Colors.white70),
-          Icon(MdiIcons.alphaI, size: 30, color: Colors.white70),
+          Icon(MdiIcons.map, size: 30, color: Colors.white70),
           Icon(MdiIcons.home, size: 30, color: Colors.white70),
-          Icon(MdiIcons.alphaA, size: 30, color: Colors.white70),
-          Icon(MdiIcons.beta, size: 30, color: Colors.white70),
+          Icon(MdiIcons.bookHeart, size: 30, color: Colors.white70),
+          Icon(MdiIcons.account, size: 30, color: Colors.white70),
         ],
         color: Colors.black87,
         buttonBackgroundColor: Colors.black87,
