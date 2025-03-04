@@ -55,7 +55,6 @@ class _FriendlistpageState extends State<Friendlistpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black87,
         leading: IconButton(
@@ -66,7 +65,8 @@ class _FriendlistpageState extends State<Friendlistpage> {
         ),
         title: Text("Friend List", style: TextStyle(color: Colors.white)),
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.black87,
         padding: EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,7 +95,7 @@ class _FriendlistpageState extends State<Friendlistpage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.grey,
-        border: Border.all(color: Colors.white, width: 2),
+        border: Border.all(color: Colors.blueGrey, width: 2),
       ),
       child: Row(
         children: [

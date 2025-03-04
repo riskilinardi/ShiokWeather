@@ -35,7 +35,6 @@ class _SurveypageState extends State<Surveypage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black87,
         leading: IconButton(
@@ -46,7 +45,8 @@ class _SurveypageState extends State<Surveypage> {
         ),
         title: Text("Survey Page", style: TextStyle(color: Colors.white)),
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.black87,
         padding: const EdgeInsets.all(40.0),
         child: SingleChildScrollView(
           child: Column(
@@ -58,7 +58,7 @@ class _SurveypageState extends State<Surveypage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
-                  color: Colors.black54,
+                  color: Colors.white70,
                 ),
               ),
               SizedBox(height: 40),
@@ -68,7 +68,7 @@ class _SurveypageState extends State<Surveypage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 40),
@@ -171,8 +171,8 @@ class _SurveypageState extends State<Surveypage> {
                 },
                 child: Text('Submit'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black87,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black87,
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   textStyle: TextStyle(fontSize: 18),
                 ),
@@ -180,7 +180,7 @@ class _SurveypageState extends State<Surveypage> {
               SizedBox(height: 40),
               Text(
                 'Previous Moods',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               SizedBox(height: 10),
               ListView.builder(

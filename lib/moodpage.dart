@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert'; // Import jsonDecode
 import 'friendlistpage.dart';
 import 'surveypage.dart';
+import 'factspage.dart';
 
 class Moodpage extends StatefulWidget {
   @override
@@ -21,13 +22,13 @@ class _MoodpageState extends State<Moodpage> {
       jsonData = data;
     });
 
-    print(data); 
+    print(data);
   }
 
   @override
   void initState() {
     super.initState();
-    loadJsonAsset(); 
+    loadJsonAsset();
   }
 
   @override
@@ -39,15 +40,11 @@ class _MoodpageState extends State<Moodpage> {
         children: [
           Container(
             width: double.infinity,
-            padding: EdgeInsets.only(top: 10, bottom: 20), 
+            padding: EdgeInsets.only(top: 10, bottom: 20),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/background.png',
-                ), 
-                fit:
-                    BoxFit
-                        .cover, 
+                image: AssetImage('assets/images/background.png'),
+                fit: BoxFit.cover,
               ),
             ),
             child: Padding(
@@ -57,25 +54,20 @@ class _MoodpageState extends State<Moodpage> {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white, 
-                        width: 2, 
-                      ),
+                      border: Border.all(color: Colors.white, width: 2),
                     ),
                     child: CircleAvatar(
-                      radius: 50, 
-                      backgroundImage: AssetImage(
-                        'assets/images/rainy.png',
-                      ), 
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/images/rainy.png'),
                     ),
                   ),
-                  SizedBox(width: 20), 
+                  SizedBox(width: 20),
                   Text(
-                    "Tester", 
+                    "Tester",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white, 
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -87,14 +79,8 @@ class _MoodpageState extends State<Moodpage> {
             padding: EdgeInsets.all(5),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 0,
-                ), 
-                minimumSize: Size(
-                  double.infinity,
-                  50,
-                ), 
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+                minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
                 ),
@@ -106,9 +92,9 @@ class _MoodpageState extends State<Moodpage> {
                 );
               },
               child: Text(
-                "What's on your mind?", 
+                "What's on your mind?",
                 style: TextStyle(
-                  color: Colors.black, 
+                  color: Colors.black,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
@@ -157,8 +143,7 @@ class _MoodpageState extends State<Moodpage> {
                           Text(
                             jsonData != null &&
                                     jsonData['content'] != null &&
-                                    jsonData['content'][0] !=
-                                        null && 
+                                    jsonData['content'][0] != null &&
                                     jsonData['content'][0]['fun_fact'] != null
                                 ? jsonData['content'][0]['fun_fact']
                                 : 'Loading...',
@@ -181,12 +166,11 @@ class _MoodpageState extends State<Moodpage> {
                     ),
                   ),
                   Container(
-                    height: 80, 
+                    height: 80,
                     color: Colors.deepPurple,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start, 
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -194,7 +178,7 @@ class _MoodpageState extends State<Moodpage> {
                             "Funfacts",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -205,7 +189,7 @@ class _MoodpageState extends State<Moodpage> {
                             children: List.generate(5, (index) {
                               return Icon(
                                 Icons.star,
-                                color: Colors.yellow, 
+                                color: Colors.yellow,
                                 size: 10,
                               );
                             }),
@@ -219,26 +203,29 @@ class _MoodpageState extends State<Moodpage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 0,
-            ), 
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween, 
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Factspage(),
+                        ),
+                      );
+                    },
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        10,
-                      ), 
+                      borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset: Offset(0, 3), 
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
@@ -254,18 +241,19 @@ class _MoodpageState extends State<Moodpage> {
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),
                               topRight: Radius.circular(10),
-                            ), 
+                            ),
                           ),
                         ),
                         Container(
                           height: 60,
-                          color: Colors.deepPurple, 
+                          color: Colors.deepPurple,
                           child: Center(
                             child: Text(
-                              "Box 1",
+                              "Cloudy Minds, Sunny Souls",
+                              textAlign: TextAlign.center, // Add this line
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -274,6 +262,7 @@ class _MoodpageState extends State<Moodpage> {
                       ],
                     ),
                   ),
+                ),
                 ),
                 SizedBox(width: 10),
                 Expanded(
@@ -301,8 +290,7 @@ class _MoodpageState extends State<Moodpage> {
                       child: Column(
                         children: [
                           Container(
-                            height:
-                                100,
+                            height: 100,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(
@@ -313,19 +301,18 @@ class _MoodpageState extends State<Moodpage> {
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
                                 topRight: Radius.circular(10),
-                              ), 
+                              ),
                             ),
                           ),
                           Container(
-                            height:
-                                60, 
-                            color: Colors.deepPurple, 
+                            height: 60,
+                            color: Colors.deepPurple,
                             child: Center(
                               child: Text(
-                                "Your Friends", 
+                                "Your Friends",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
