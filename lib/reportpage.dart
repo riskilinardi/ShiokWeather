@@ -38,10 +38,10 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.black87,
+      backgroundColor: Colors.black87,
+      resizeToAvoidBottomInset: false,
+      body: SingleChildScrollView(
           child: _page(),
-
       ),
     );
   }
