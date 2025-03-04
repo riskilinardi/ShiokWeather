@@ -17,13 +17,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.lightBlue, Colors.indigo],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Colors.black87,
         child: Stack(
           children: [
             _page(),
@@ -31,7 +25,7 @@ class _SignupPageState extends State<SignupPage> {
               top: 80,
               left: 20,
               child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: Colors.blueGrey),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -97,7 +91,7 @@ class _SignupPageState extends State<SignupPage> {
   }) {
     var border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
-      borderSide: const BorderSide(color: Colors.blue),
+      borderSide: const BorderSide(color: Colors.blueGrey),
     ); 
 
     return TextField(
@@ -123,7 +117,7 @@ class _SignupPageState extends State<SignupPage> {
               .infinity, 
       height: 50, 
       decoration: BoxDecoration(
-        color: Colors.blue, 
+        color: Colors.blueGrey,
         borderRadius: BorderRadius.circular(
           18,
         ), 
@@ -206,7 +200,7 @@ class _SignupPageState extends State<SignupPage> {
                 fontSize: 16,
                 color:
                     Colors
-                        .blue, 
+                        .blueGrey,
                 decoration: TextDecoration.underline,
               ),
             ),

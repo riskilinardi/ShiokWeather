@@ -175,7 +175,6 @@ class _LoginPageState extends State<LoginPage> {
                 fontSize: 16,
                 color: Colors.blueGrey,
                 decoration: TextDecoration.underline,
-                decorationColor: Colors.blueGrey
               ),
             ),
           ],
