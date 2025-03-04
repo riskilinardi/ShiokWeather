@@ -6,8 +6,8 @@ workflows:
         name: iOS App
         environment:
             vars:
-                XCODE_WORKSPACE: "Trackery"
-                XCODE_SCHEME: "Trackery"
+                XCODE_WORKSPACE: "ShiokWeather"
+                XCODE_SCHEME: "ShiokWeather"
             xcode: latest
             cocoapods: default
         scripts:

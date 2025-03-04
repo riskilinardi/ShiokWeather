@@ -32,13 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.lightBlue, Colors.indigo],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Colors.black87,
         child: _page(),
       ),
     );
@@ -89,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
   }) {
     var border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(20),
-      borderSide: const BorderSide(color: Colors.blue, width: 2),
+      borderSide: const BorderSide(color: Colors.blueGrey, width: 2),
     );
 
     return TextField(
@@ -120,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
       width: double.infinity,
       height: 50,
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Colors.blueGrey,
         borderRadius: BorderRadius.circular(18),
       ),
       child: TextButton(
@@ -178,8 +172,9 @@ class _LoginPageState extends State<LoginPage> {
               text: "Sign up",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.blue,
+                color: Colors.blueGrey,
                 decoration: TextDecoration.underline,
+                decorationColor: Colors.blueGrey
               ),
             ),
           ],
