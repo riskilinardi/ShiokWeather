@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:gap/gap.dart';
 import 'loginpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class fourdayslist{
   DateTime? timestamp;
@@ -48,7 +49,6 @@ class _HomePage extends State<HomePage> {
   final itemScrollController = ItemScrollController();
   List<fourdayslist> listforecast = [];
   List<threehourlylist> listhourlyforecast = [];
-  int? uid;
 
   Future<void> fourdaysforecast() async {
     var url = 'https://api-open.data.gov.sg/v2/real-time/api/four-day-outlook';
@@ -63,8 +63,8 @@ class _HomePage extends State<HomePage> {
           map['data']['records'][0]['forecasts'][x]['temperature']['high'],
           map['data']['records'][0]['forecasts'][x]['relativeHumidity']['low'],
           map['data']['records'][0]['forecasts'][x]['relativeHumidity']['high'],
-          map['data']['records'][0]['forecasts'][x]['wind']['low'],
-          map['data']['records'][0]['forecasts'][x]['wind']['high'],
+          map['data']['records'][0]['forecasts'][x]['wind']['speed']['low'],
+          map['data']['records'][0]['forecasts'][x]['wind']['speed']['high'],
           map['data']['records'][0]['forecasts'][x]['direction'].toString(),
           map['data']['records'][0]['forecasts'][x]['forecast'].toString()
       );
@@ -91,9 +91,6 @@ Future<void> callapi() async {
   listforecast = [];
   await fourdaysforecast();
   await threehourlyforecast();
-  
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  uid = prefs.getInt('id');
 }
 
 
@@ -138,7 +135,7 @@ Future<void> callapi() async {
                             children: [
                               const Gap(10),
                               Text(
-                                'Singapore User ID: ' + uid.toString(),
+                                'Singapore',
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
                               ),
                               Image(
@@ -322,7 +319,7 @@ Future<void> callapi() async {
                                     );
                                   },
                                 ),
-                                const Divider(),
+                                const Divider(color: Colors.white,),
                                 InkWell(
                                   splashColor: Colors.black87,
                                   borderRadius: BorderRadius.all(
@@ -331,7 +328,8 @@ Future<void> callapi() async {
                                     padding: const EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
                                       '4 days forecast',
-                                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                        color: Colors.white),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
@@ -340,85 +338,15 @@ Future<void> callapi() async {
                             ),
                           ),
                         ),
-                        Card(
-                          color: Colors.black87,
-                          margin: const EdgeInsets.only(bottom: 15, right: 10, left: 10),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                            child: Column(
-                              children: [
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: 4,
-                                  itemBuilder: (c, i) {
-                                    return InkWell(
-                                      splashColor: Colors.black87,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(16)),
-                                      child: Container(
-                                        margin: const EdgeInsets.symmetric(vertical: 12),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                DateFormat('EEEE').format(DateTime.parse(data[i].timestamp.toString())),
-                                                style: Theme.of(c).textTheme.labelLarge?.copyWith(
-                                                  color: Colors.white,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  // Image.network('https://openweathermap.org/img/wn/',
-                                                  //   scale: 1.5,
-                                                  // ),
-                                                  const Gap(5),
-                                                  Expanded(
-                                                    child: Text(imagedisplay[i],
-                                                      style: TextStyle(color: Colors.white),
-                                                      maxLines: 12,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  Text(data[i].templow.toString() + '\u2103',
-                                                    style: Theme.of(c).textTheme.labelLarge?.copyWith(
-                                                      color: Colors.white30,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    ' / ',
-                                                    style: Theme.of(c).textTheme.labelLarge?.copyWith(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                  Text(data[i].temphigh.toString() + '\u2103',
-                                                    style: Theme.of(c).textTheme.labelLarge?.copyWith(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
+                        _buildCard('Lowest Humidity', 'Highest Humidity',
+                            data[0].rhlow.toString() + '%', data[0].rhhigh.toString() + '%',
+                            'waterThermometerOutline',
+                            Colors.blue.shade100.toARGB32(), Colors.blue.shade700.toARGB32()
+                        ),
+                        _buildCard('Lowest Wind Speed', 'Highest Wind Speed',
+                            data[0].wslow.toString() + ' m/s', data[0].wshigh.toString() + ' m/s',
+                            'weatherWindy',
+                            Colors.green.shade100.toARGB32(), Colors.green.shade700.toARGB32()
                         ),
                       ],
                     );
@@ -437,4 +365,88 @@ Future<void> callapi() async {
           ),
         );
   }
+  Widget _buildCard(String title1, String title2, String data1, String data2, String logo, int color1, int color2){
+    return Card(
+      color: Colors.black87,
+      margin: const EdgeInsets.only(bottom: 15, right: 10, left: 10),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        child: Row(
+          children: [
+            Expanded(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black38,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(MdiIcons.fromString(logo),
+                              color: Color(color1), size: 50,),
+                          Text(
+                            title1,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                              data1,
+                              style: TextStyle(color: Colors.white)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
+              ),
+            ),
+            Expanded(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black38,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(MdiIcons.fromString(logo),
+                              color: Color(color2), size: 50),
+                          Text(
+                            title1,
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          Text(
+                              data2,
+                              style: TextStyle(color: Colors.white)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
+

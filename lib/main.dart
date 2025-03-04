@@ -51,10 +51,6 @@ class _MainPage extends State<MainPage> {
           IconButton(
             icon: Icon(Icons.settings, color: Colors.white, size: 30),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
-              );
             },
           ),
         ],
