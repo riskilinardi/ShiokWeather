@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,11 +12,16 @@ class User {
   final String username;
   final String email;
   final String password;
+  final String? displayname;
+  final String? status;
+  final String? mood;
 
-  User({this.id, required this.username, required this.email, required this.password});
+  User({this.id, required this.username, required this.email, required this.password,
+    this.displayname, this.status, this.mood});
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'username': username, 'email': email, 'password': password};
+    return {'id': id, 'username': username, 'email': email, 'password': password,
+    'displayname': displayname, 'status': status, 'mood': mood};
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
@@ -21,6 +30,9 @@ class User {
       username: map['username'],
       email: map['email'],
       password: map['password'],
+      displayname: map['displayname'],
+      status: map['status'],
+      mood: map['mood']
     );
   }
 }
@@ -73,6 +85,31 @@ class Mood {
   }
 }
 
+// To help store data for friend list
+class Friendlist {
+  final int uid1;
+  final int uid2;
+  final String timestamp;
+
+  Friendlist({required this.uid1, required this.uid2, required this.timestamp});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid1': uid1,
+      'uid2': uid2,
+      'timestamp': timestamp,
+    };
+  }
+
+  factory Friendlist.fromMap(Map<String, dynamic> map) {
+    return Friendlist(
+      uid1: map['uid1'],
+      uid2: map['uid2'],
+      timestamp: map['timestamp'],
+    );
+  }
+}
+
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();
   static Database? _database;
@@ -97,15 +134,6 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY,
-        username TEXT,
-        email TEXT,
-        password TEXT
-      )
-    ''');
-
-    await db.execute('''
       CREATE TABLE floodreport (
         id INTEGER PRIMARY KEY,
         photo TEXT,
@@ -121,6 +149,29 @@ class DatabaseHelper {
         imagePath TEXT
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY,
+        username TEXT,
+        email TEXT,
+        password TEXT,
+        displayname TEXT,
+        status TEXT,
+        mood TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE friendlist (
+        uid1 INTEGER,
+        uid2 INTEGER,
+        timestamp TEXT,
+        FOREIGN KEY (uid1) REFERENCES users(id),
+        FOREIGN KEY (uid2) REFERENCES users(id)
+      )
+    ''');
+
   }
 
   Future<int> insertUser(User user) async {
@@ -154,11 +205,36 @@ class DatabaseHelper {
 
     if (existingUsers.isEmpty) {
       List<User> usersToAdd = [
-        User(username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
+        User(id: 1, username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
+        User(id: 2, username: 'Riski', email: 'riski@gmail.com', password: 'riski123', displayname: 'Riski L', status: "I'm so confused today", mood: 'sunny.png'),
+        User(id: 3, username: 'Bew', email: 'bew@gmail.com', password: 'bew123', displayname: 'Bew', status: "I'm happy right now", mood: 'happy.png'),
+        User(id: 4, username: 'Nana', email: 'nana@gmail.com', password: 'nana123', displayname: 'Nana', status: "Hey im very sad today", mood: 'sad.png')
       ];
 
       for (User user in usersToAdd) {
         await insertUser(user);
+      }
+      List<Friendlist> flToAdd = [
+        Friendlist(uid1: 2, uid2: 3, timestamp: DateTime.now().toString()),
+        Friendlist(uid1: 3, uid2: 4, timestamp: DateTime.now().toString())
+      ];
+
+      for (Friendlist fl in flToAdd) {
+        await insertFriend(fl);
+      }
+
+      ByteData b1 = await rootBundle.load('assets/images/flood1.png');
+      String base641 = base64Encode(Uint8List.view(b1.buffer));
+      ByteData b2 = await rootBundle.load('assets/images/flood2.png');
+      String base642 = base64Encode(Uint8List.view(b2.buffer));
+
+      List<FloodReport> floodToAdd = [
+        FloodReport(photo: base641, description: 'Flood is really high here!! Be careful everyone!', location: 'Woodlands'),
+        FloodReport(photo: base642, description: 'Oh my god! Be wary of high flood area at Queenstown Shopping Center!', location: 'Queenstown')
+      ];
+
+      for (FloodReport f in floodToAdd) {
+        await insertFloodReport(f);
       }
     }
   }
@@ -196,5 +272,19 @@ class DatabaseHelper {
   Future<int> updateMood(Mood m) async {
     Database db = await instance.db;
     return await db.update('mood', m.toMap(), where: 'id = ?', whereArgs: [m.id]);
+  }
+
+  Future<int> insertFriend(Friendlist fl) async {
+    Database db = await instance.db;
+    return await db.insert('friendlist', fl.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<List<Map<String, dynamic>>> queryFriendlist(int? id) async {
+    Database db = await instance.db;
+    return await db.rawQuery(
+        'SELECT u.id, u.displayname, u.status, u.mood '
+            'FROM users AS u '
+        'INNER JOIN friendlist AS fl ON (u.id = fl.uid1 OR U.id = fl.uid2) '
+        'WHERE (fl.uid1=$id OR fl.uid2=$id) AND u.id != $id');
   }
 }

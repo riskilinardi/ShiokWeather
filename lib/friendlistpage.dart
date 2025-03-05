@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+
+import 'db.dart';
 
 class Friendlistpage extends StatefulWidget {
   @override
@@ -46,10 +49,23 @@ class _FriendlistpageState extends State<Friendlistpage> {
     }
   }
 
+  List<Map<String, dynamic>> _friendlist = [];
+
   @override
   void initState() {
     super.initState();
     loadJsonAsset();
+    _loadFriends();
+  }
+
+  // Load all friends from database
+  _loadFriends() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? id = prefs.getInt('id');
+    List<Map<String, dynamic>> friendlist = await DatabaseHelper.instance.queryFriendlist(id);
+    setState(() {
+      _friendlist = friendlist;
+    });
   }
 
   @override
@@ -74,11 +90,11 @@ class _FriendlistpageState extends State<Friendlistpage> {
             SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
-                itemCount: comments.length,
+                itemCount: _friendlist.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
-                    child: _displayBox("Friend", comments[index]),
+                    child: _displayBox(_friendlist[index]['displayname'], _friendlist[index]['status'], _friendlist[index]['mood']),
                   );
                 },
               ),
@@ -89,7 +105,7 @@ class _FriendlistpageState extends State<Friendlistpage> {
     );
   }
 
-  Widget _displayBox(String title, String content) {
+  Widget _displayBox(String title, String content, String mood) {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -124,7 +140,7 @@ class _FriendlistpageState extends State<Friendlistpage> {
           Column(
             children: [
               Image.asset(
-                'assets/images/sunny.png',
+                'assets/images/' + mood,
                 width: 50,
                 height: 50,
               ),
