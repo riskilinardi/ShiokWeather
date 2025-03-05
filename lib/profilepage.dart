@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shiokweather/loginpage.dart';
+
+import 'db.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -15,6 +18,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
 
+  List<Map<String, dynamic>> _personaldata = [];
+
   @override
   void initState() {
     super.initState();
@@ -23,37 +28,50 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? id = prefs.getInt('id');
+    List<Map<String, dynamic>> personaldata = await DatabaseHelper.instance.queryOneUser(id);
     setState(() {
-      username = prefs.getString('username') ?? 'Unknown';
-      email = prefs.getString('email') ?? 'Not Provided';
-      updatedName = prefs.getString('name') ?? '';
-      usernameController.text = username;
-      emailController.text = email;
-      nameController.text = updatedName;
+      _personaldata = personaldata;
+      nameController.text = _personaldata[0]['displayname'];
+      usernameController.text = _personaldata[0]['username'];
+      emailController.text = _personaldata[0]['email'];
     });
   }
 
   _updateName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      updatedName = nameController.text;
-    });
-    await prefs.setString('name', updatedName);
+    int? id = prefs.getInt('id');
+    int output = await DatabaseHelper.instance.updateOneUser(nameController.text, emailController.text, usernameController.text, id);
+
+    if (output > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Profile updated successfully!', style: TextStyle(color: Colors.white),),
+      ));
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => MainPage()),
+      // );
+    } else {
+      // Something went wrong
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Profile update failed!'),
+      ));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black87,
       appBar: AppBar(
         title: Text(
           "Edit Profile",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.black87,
+        backgroundColor: Colors.black26,
         centerTitle: true,
       ),
       body: Container(
-        color: Colors.black87,
         child: SingleChildScrollView(
           padding: EdgeInsets.all(20.0),
           child: Column(
@@ -64,9 +82,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 backgroundImage: AssetImage("assets/images/background.png"),
               ),
               SizedBox(height: 20),
-              if (updatedName.isNotEmpty)
+              if (_personaldata.isNotEmpty)
                 Text(
-                  updatedName,
+                  _personaldata[0]['displayname'],
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
                 ),
               SizedBox(height: 20),
@@ -90,7 +108,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
@@ -128,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
           decoration: InputDecoration(
             enabledBorder: border,
             focusedBorder: border,
-            fillColor: Colors.black54,
+            fillColor: Colors.black12,
             filled: true,
           ),
         ),

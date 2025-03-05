@@ -184,9 +184,19 @@ class DatabaseHelper {
     return await db.query('users');
   }
 
+  Future<List<Map<String, dynamic>>> queryOneUser(int? id) async {
+    Database db = await instance.db;
+    return await db.query('users', where: 'id = ?', whereArgs: [id]);
+  }
+
   Future<int> updateUser(User user) async {
     Database db = await instance.db;
     return await db.update('users', user.toMap(), where: 'id = ?', whereArgs: [user.id]);
+  }
+
+  Future<int> updateOneUser(String displayname, String email, String username, int? id) async {
+    Database db = await instance.db;
+    return await db.rawUpdate('UPDATE users SET displayname="$displayname", email="$email", username="$username" WHERE id=$id');
   }
 
   Future<int> deleteUser(int id) async {
@@ -206,9 +216,12 @@ class DatabaseHelper {
     if (existingUsers.isEmpty) {
       List<User> usersToAdd = [
         User(id: 1, username: 'Admin', email: 'admin@gmail.com', password: 'admin123'),
-        User(id: 2, username: 'Riski', email: 'riski@gmail.com', password: 'riski123', displayname: 'Riski L', status: "I'm so confused today", mood: 'sunny.png'),
-        User(id: 3, username: 'Bew', email: 'bew@gmail.com', password: 'bew123', displayname: 'Bew', status: "I'm happy right now", mood: 'happy.png'),
-        User(id: 4, username: 'Nana', email: 'nana@gmail.com', password: 'nana123', displayname: 'Nana', status: "Hey im very sad today", mood: 'sad.png')
+        User(id: 2, username: 'Riski', email: 'riski@gmail.com', password: 'riski123',
+            displayname: 'Riski L', status: "I'm so confused today", mood: 'sunny.png'),
+        User(id: 3, username: 'Bew', email: 'bew@gmail.com', password: 'bew123',
+            displayname: 'Bew', status: "I'm happy right now", mood: 'happy.png'),
+        User(id: 4, username: 'Nana', email: 'nana@gmail.com', password: 'nana123',
+            displayname: 'Nana', status: "Hey im very sad today", mood: 'sad.png')
       ];
 
       for (User user in usersToAdd) {
