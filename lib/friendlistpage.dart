@@ -12,14 +12,12 @@ class Friendlistpage extends StatefulWidget {
 
 class _FriendlistpageState extends State<Friendlistpage> {
   List<String> comments = ["Loading comments..."];
+  TextEditingController inputController = TextEditingController();
 
   Future<void> loadJsonAsset() async {
     try {
       final String jsonString = await rootBundle.loadString('assets/mood.json');
       final data = jsonDecode(jsonString);
-
-      //Print JSON structure
-      print("JSON Data: $data");
 
       if (data.containsKey('content') && data['content'] is List && data['content'].length > 1) {
         var commentsSection = data['content'][1];
@@ -36,13 +34,7 @@ class _FriendlistpageState extends State<Friendlistpage> {
           setState(() {
             comments = loadedComments.isNotEmpty ? loadedComments : ["No comments found"];
           });
-
-          print("Loaded Comments: $comments");
-        } else {
-          print("Error: 'comments' key is missing or empty.");
         }
-      } else {
-        print("Error: 'content' key is missing or has insufficient elements.");
       }
     } catch (e) {
       print("Error loading JSON: $e");
@@ -58,7 +50,6 @@ class _FriendlistpageState extends State<Friendlistpage> {
     _loadFriends();
   }
 
-  // Load all friends from database
   _loadFriends() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? id = prefs.getInt('id');
@@ -66,6 +57,71 @@ class _FriendlistpageState extends State<Friendlistpage> {
     setState(() {
       _friendlist = friendlist;
     });
+  }
+
+  _addFriend() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? id = prefs.getInt('id');
+    String userId = inputController.text.trim();
+
+    if (userId.isNotEmpty) {
+      try {
+        int parsedUserId = int.parse(userId);
+
+        List<Map<String, dynamic>> userList = await DatabaseHelper.instance.queryOneUser(parsedUserId);
+
+        if (userList.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('User does not exist!'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
+        Friendlist friend = Friendlist(uid1: id!, uid2: parsedUserId, timestamp: DateTime.now().toString());
+
+        int result = await DatabaseHelper.instance.insertFriend(friend);
+
+        if (result == 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('You are already friends with this user!'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          return;
+        }
+
+        _loadFriends();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Friend added successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        inputController.clear();
+      } catch (e) {
+        print("Error adding friend: $e");
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error adding friend!'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter a valid user ID!'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 
   @override
@@ -87,6 +143,33 @@ class _FriendlistpageState extends State<Friendlistpage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: inputController,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Enter user id...',
+                      hintStyle: TextStyle(color: Colors.white70),
+                      filled: true,
+                      fillColor: Colors.black54,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add, color: Colors.white),
+                  onPressed: _addFriend,
+                ),
+              ],
+            ),
             SizedBox(height: 20),
             Expanded(
               child: ListView.builder(

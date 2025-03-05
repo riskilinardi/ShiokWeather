@@ -199,6 +199,20 @@ class DatabaseHelper {
     return await db.rawUpdate('UPDATE users SET displayname="$displayname", email="$email", username="$username" WHERE id=$id');
   }
 
+  // Update user mood and status by user id (uid)
+Future<int> updateUserMoodAndStatusById(int uid, String status, String moodImagePath) async {
+  Database db = await instance.db;
+
+  // Update status and mood based on user id
+  return await db.update(
+    'users',
+    {'status': status, 'mood': moodImagePath},
+    where: 'id = ?',
+    whereArgs: [uid],
+  );
+}
+
+
   Future<int> deleteUser(int id) async {
     Database db = await instance.db;
     return await db.delete('users', where: 'id = ?', whereArgs: [id]);
@@ -226,14 +240,6 @@ class DatabaseHelper {
 
       for (User user in usersToAdd) {
         await insertUser(user);
-      }
-      List<Friendlist> flToAdd = [
-        Friendlist(uid1: 2, uid2: 3, timestamp: DateTime.now().toString()),
-        Friendlist(uid1: 3, uid2: 4, timestamp: DateTime.now().toString())
-      ];
-
-      for (Friendlist fl in flToAdd) {
-        await insertFriend(fl);
       }
 
       ByteData b1 = await rootBundle.load('assets/images/flood1.png');
@@ -287,10 +293,22 @@ class DatabaseHelper {
     return await db.update('mood', m.toMap(), where: 'id = ?', whereArgs: [m.id]);
   }
 
-  Future<int> insertFriend(Friendlist fl) async {
-    Database db = await instance.db;
-    return await db.insert('friendlist', fl.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+Future<int> insertFriend(Friendlist fl) async {
+  Database db = await instance.db;
+
+  // Check if the friend already exists in the friendlist
+  var result = await db.query('friendlist',
+      where: '(uid1 = ? AND uid2 = ?) OR (uid1 = ? AND uid2 = ?)',
+      whereArgs: [fl.uid1, fl.uid2, fl.uid2, fl.uid1]);
+
+  // If the result is not empty, the friendship already exists
+  if (result.isNotEmpty) {
+    print("Friendship already exists.");
+    return 0;
   }
+  return await db.insert('friendlist', fl.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+}
+
 
   Future<List<Map<String, dynamic>>> queryFriendlist(int? id) async {
     Database db = await instance.db;
