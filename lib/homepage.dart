@@ -109,8 +109,7 @@ Future<void> callapi() async {
                   String sunny = 'Fair';
                   List<String> rainy = ['Rain', 'Showers'];
                   String thunderstorm = 'Thundery';
-                  List<String> cloudy = ['Cloudy', 'Hazy', 'Windy', 'Mist', 'Fog', ];
-                  imagedisplay.add('Rainy');
+                  List<String> cloudy = ['Cloudy', 'Hazy', 'Windy', 'Mist', 'Fog'];
                   for(final x in listforecast){
                     String? check = x.forecast;
                     if(check!.contains(sunny)){
@@ -138,16 +137,17 @@ Future<void> callapi() async {
                                 'Singapore',
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
                               ),
+                              const Gap(10),
                               Image(
                                 image: AssetImage('assets/images/' + imagedisplay[0].toLowerCase() + '.png'),
                                 fit: BoxFit.fill,
-                                height: 200,
+                                height: 250,
                               ),
                               Text(
                                 data2[0].currtemp.toString() + '\u2103',
                                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                   color: Colors.white,
-                                    fontSize: 90,
+                                    fontSize: 80,
                                     fontWeight: FontWeight.w700,
                                     shadows: const [
                                       Shadow(

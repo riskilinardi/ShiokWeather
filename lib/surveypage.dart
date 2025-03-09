@@ -102,11 +102,11 @@ class _SurveypageState extends State<Surveypage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
-                          onTap: () => _onImageSelected('sunny.png'),
+                          onTap: () => _onImageSelected('angry.png'),
                           child: Column(
                             children: [
                               Image.asset(
-                                'assets/images/sunny.png',
+                                'assets/images/angry.png',
                                 width: 70,
                                 height: 70,
                               ),

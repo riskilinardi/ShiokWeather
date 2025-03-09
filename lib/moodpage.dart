@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; // Import jsonDecode
+import 'db.dart';
 import 'friendlistpage.dart';
 import 'surveypage.dart';
 import 'factspage.dart';
@@ -12,6 +14,7 @@ class Moodpage extends StatefulWidget {
 
 class _MoodpageState extends State<Moodpage> {
   var jsonData;
+  String displayname = '';
 
   Future<void> loadJsonAsset() async {
     final String jsonString = await rootBundle.loadString('assets/mood.json');
@@ -29,6 +32,16 @@ class _MoodpageState extends State<Moodpage> {
   void initState() {
     super.initState();
     loadJsonAsset();
+    _loadProfileData();
+  }
+
+  _loadProfileData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? id = prefs.getInt('id');
+    List<Map<String, dynamic>> personaldata = await DatabaseHelper.instance.queryOneUser(id);
+    if(personaldata.isNotEmpty) {
+      displayname = personaldata[0]['displayname'];
+    }
   }
 
   @override
@@ -63,7 +76,7 @@ class _MoodpageState extends State<Moodpage> {
                   ),
                   SizedBox(width: 20),
                   Text(
-                    "Tester",
+                    displayname,
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -95,7 +108,7 @@ class _MoodpageState extends State<Moodpage> {
                 "What's on your mind?",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 12,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -121,7 +134,7 @@ class _MoodpageState extends State<Moodpage> {
                     height: 140,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/images/background.png'),
+                        image: AssetImage('assets/images/background_watercolor.png'),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.only(
@@ -167,7 +180,7 @@ class _MoodpageState extends State<Moodpage> {
                   ),
                   Container(
                     height: 80,
-                    color: Colors.deepPurple,
+                    color: Colors.blueGrey.shade600,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +248,7 @@ class _MoodpageState extends State<Moodpage> {
                           height: 100,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/images/background.png'),
+                              image: AssetImage('assets/images/moodpage_zen.png'),
                               fit: BoxFit.cover,
                             ),
                             borderRadius: BorderRadius.only(
@@ -246,7 +259,7 @@ class _MoodpageState extends State<Moodpage> {
                         ),
                         Container(
                           height: 60,
-                          color: Colors.deepPurple,
+                          color: Colors.blueGrey.shade600,
                           child: Center(
                             child: Text(
                               "Cloudy Minds, Sunny Souls",
@@ -294,7 +307,7 @@ class _MoodpageState extends State<Moodpage> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(
-                                  'assets/images/background.png',
+                                  'assets/images/friends.png',
                                 ),
                                 fit: BoxFit.cover,
                               ),
@@ -306,7 +319,7 @@ class _MoodpageState extends State<Moodpage> {
                           ),
                           Container(
                             height: 60,
-                            color: Colors.deepPurple,
+                            color: Colors.blueGrey.shade600,
                             child: Center(
                               child: Text(
                                 "Your Friends",
