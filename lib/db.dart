@@ -240,6 +240,15 @@ Future<int> updateUserMoodAndStatusById(int uid, String status, String moodImage
         await insertUser(user);
       }
 
+      List<Friendlist> friends = [
+        Friendlist(uid1: 2, uid2: 3, timestamp: DateTime.now().toString()),
+        Friendlist(uid1: 3, uid2: 4, timestamp: DateTime.now().toString())
+      ];
+
+      for (Friendlist f in friends) {
+        await insertFriend(f);
+      }
+
       ByteData b1 = await rootBundle.load('assets/images/flood1.png');
       String base641 = base64Encode(Uint8List.view(b1.buffer));
       ByteData b2 = await rootBundle.load('assets/images/flood2.png');

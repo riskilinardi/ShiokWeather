@@ -13,6 +13,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String username = '';
   String email = '';
   String updatedName = '';
+  int? userid;
   
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -29,6 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? id = prefs.getInt('id');
+    userid = id;
     List<Map<String, dynamic>> personaldata = await DatabaseHelper.instance.queryOneUser(id);
     setState(() {
       _personaldata = personaldata;
@@ -84,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 20),
               if (_personaldata.isNotEmpty)
                 Text(
-                  _personaldata[0]['displayname'],
+                  _personaldata[0]['displayname'] + " | User Id: " + userid.toString() ,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
                 ),
               SizedBox(height: 20),

@@ -228,7 +228,7 @@ class _ReportPageState extends State<ReportPage> {
             ));
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => MainPage()), // Navigate to login page
+              MaterialPageRoute(builder: (context) => MainPage()),
             );
           } else {
             // Something went wrong

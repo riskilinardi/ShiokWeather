@@ -355,7 +355,7 @@ Future<void> callapi() async {
                     child: Column(
                       children: <Widget>[
                         Padding(padding: new EdgeInsets.only(top: 200.0)),
-                        Center(child: Text(snapshot.error.toString())),
+                        Center(child: Text(snapshot.error.toString(), style: TextStyle(color: Colors.white70),)),
                       ],
                     ),
                   );
